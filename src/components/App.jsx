@@ -40,13 +40,16 @@ export class App extends Component {
       this.state.page !== prevState.page
     ) {
       this.setState({ loading: true });
-      // console.log(prevState.pictures.hits);
       const parsedDataUpdate = await getData(this.state.word, this.state.page);
       this.setState({
-        // pictures: parsedDataUpdate,
-        pictures: prevState.pictures.concat(parsedDataUpdate),
+        pictures: parsedDataUpdate,
         loading: false,
       });
+
+      // this.setState({
+      //   pictures: prevState.pictures.concat(parsedDataUpdate),
+      //   loading: false,
+      // });
     }
   }
   async componentWillUnmount() {
