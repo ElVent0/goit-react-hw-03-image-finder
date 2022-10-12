@@ -34,17 +34,24 @@ export class App extends Component {
     });
   }
 
-  async componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(_, prevState) {
     if (
       this.state.word !== prevState.word ||
       this.state.page !== prevState.page
     ) {
       this.setState({ loading: true });
-      const parsedDataUpdate = await getData(this.state.word, this.state.page);
-      this.setState({
-        pictures: parsedDataUpdate,
-        loading: false,
-      });
+      try {
+        const parsedDataUpdate = await getData(
+          this.state.word,
+          this.state.page
+        );
+        this.setState({
+          pictures: parsedDataUpdate,
+          loading: false,
+        });
+      } catch (e) {
+        console.log(e);
+      }
 
       // this.setState({
       //   pictures: prevState.pictures.concat(parsedDataUpdate),
