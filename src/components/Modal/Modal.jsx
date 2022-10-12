@@ -7,7 +7,7 @@ class Modal extends Component {
     return (
       <ModalStyled onClick={this.props.onCloseModal}>
         <ModalStyledContent>
-          <img src={this.props.bigUrl} alt="" />
+          <img src={this.props.bigUrl} alt="" width="100%" />
         </ModalStyledContent>
       </ModalStyled>
     );
