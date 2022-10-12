@@ -1,53 +1,92 @@
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
-import ImageGalleryItem from './ImageGalleryItem/ImageGalleryItem';
 import Loader from './Loader/Loader';
 import Button from './Button/Button';
 import Modal from './Modal/Modal';
 import React, { Component } from 'react';
+import getData from '../api/getData';
 
 export class App extends Component {
   state = {
     pictures: [],
     word: '',
+    page: 1,
+    loading: false,
+    bigUrl: '',
   };
 
   handlerSubmit = word => {
     this.setState({
       word: word,
+      page: 1,
     });
   };
 
   async componentDidMount() {
-    const data = await fetch(
-      'https://pixabay.com/api/?q=cat&page=1&key=15486639-fb36d9e164edb7a2c5eb45855&image_type=photo&orientation=horizontal&per_page=12'
-    );
-    const parsedData = await data.json();
-
+    const parsedData = await getData(this.state.word, this.state.page);
     this.setState({
       pictures: parsedData,
+    });
+    window.addEventListener('keydown', e => {
+      if (e.code === 'Escape') {
+        this.setState({ bigUrl: '' });
+      }
     });
   }
 
   async componentDidUpdate(prevProps, prevState) {
-    if (this.state.word !== prevState.word) {
-      const data = await fetch(
-        `https://pixabay.com/api/?q=${this.state.word}&page=1&key=15486639-fb36d9e164edb7a2c5eb45855&image_type=photo&orientation=horizontal&per_page=12`
-      );
-      const parsedData = await data.json();
+    if (
+      this.state.word !== prevState.word ||
+      this.state.page !== prevState.page
+    ) {
+      this.setState({ loading: true });
 
+      const parsedDataUpdate = await getData(this.state.word, this.state.page);
       this.setState({
-        pictures: parsedData,
+        pictures: parsedDataUpdate,
+        loading: false,
       });
     }
   }
+  async componentWillUnmount() {
+    window.removeEventListener('keydown', e => {
+      if (e.code === 'Escape') {
+        this.setState({ bigUrl: '' });
+      }
+    });
+  }
+
+  handleLoadMore = () => {
+    this.setState({
+      page: this.state.page + 1,
+    });
+  };
+
+  onOpenModal = largeImageURL => {
+    this.setState({ bigUrl: largeImageURL });
+  };
+
+  onCloseModal = e => {
+    if (e.currentTarget === e.target) {
+      this.setState({ bigUrl: '' });
+    }
+  };
 
   render() {
     return (
       <>
         <Searchbar onSubmit={this.handlerSubmit} />
-        <ImageGallery dataArray={this.state.pictures.hits} />
-        <Button />
+        {this.state.loading && <Loader />}
+        {!this.state.loading && (
+          <ImageGallery
+            dataArray={this.state.pictures.hits}
+            onOpenModal={this.onOpenModal}
+          />
+        )}
+        {this.state.pictures && <Button onLoadMore={this.handleLoadMore} />}
+        {this.state.bigUrl && (
+          <Modal bigUrl={this.state.bigUrl} onCloseModal={this.onCloseModal} />
+        )}
       </>
     );
   }

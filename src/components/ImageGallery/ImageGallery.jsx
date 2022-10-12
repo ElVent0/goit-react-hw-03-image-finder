@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
+import PropTypes from 'prop-types';
+import { GallaryStyled } from './ImageGallery.styled';
 
 class ImageGallery extends Component {
   render() {
-    console.log(this.props.dataArray);
     return (
       <>
-        <ul className="gallery">
+        <GallaryStyled>
           {this.props.dataArray &&
             this.props.dataArray.map(item => {
               return (
@@ -15,13 +16,19 @@ class ImageGallery extends Component {
                   bigUrl={item.largeImageURL}
                   smallUrl={item.previewURL}
                   alt={item.tags.split()}
+                  onOpenModal={this.props.onOpenModal}
                 />
               );
             })}
-        </ul>
+        </GallaryStyled>
       </>
     );
   }
 }
 
 export default ImageGallery;
+
+ImageGallery.propTypes = {
+  dataArray: PropTypes.array,
+  onOpenModal: PropTypes.func,
+};
