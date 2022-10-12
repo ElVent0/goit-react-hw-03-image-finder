@@ -40,10 +40,11 @@ export class App extends Component {
       this.state.page !== prevState.page
     ) {
       this.setState({ loading: true });
-
+      // console.log(prevState.pictures.hits);
       const parsedDataUpdate = await getData(this.state.word, this.state.page);
       this.setState({
-        pictures: parsedDataUpdate,
+        // pictures: parsedDataUpdate,
+        pictures: prevState.pictures.concat(parsedDataUpdate),
         loading: false,
       });
     }
@@ -56,7 +57,8 @@ export class App extends Component {
     });
   }
 
-  handleLoadMore = () => {
+  handleLoadMore = e => {
+    e.preventDefault();
     this.setState({
       page: this.state.page + 1,
     });
@@ -79,7 +81,7 @@ export class App extends Component {
         {this.state.loading && <Loader />}
         {!this.state.loading && (
           <ImageGallery
-            dataArray={this.state.pictures.hits}
+            dataArray={this.state.pictures}
             onOpenModal={this.onOpenModal}
           />
         )}
