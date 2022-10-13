@@ -27,11 +27,11 @@ export class App extends Component {
     this.setState({
       pictures: parsedData,
     });
-    window.addEventListener('keydown', e => {
-      if (e.code === 'Escape') {
-        this.setState({ bigUrl: '' });
-      }
-    });
+    // window.addEventListener('keydown', e => {
+    //   if (e.code === 'Escape') {
+    //     this.setState({ bigUrl: '' });
+    //   }
+    // });
   }
 
   async componentDidUpdate(_, prevState) {
@@ -59,16 +59,8 @@ export class App extends Component {
       // });
     }
   }
-  async componentWillUnmount() {
-    window.removeEventListener('keydown', e => {
-      if (e.code === 'Escape') {
-        this.setState({ bigUrl: '' });
-      }
-    });
-  }
 
-  handleLoadMore = e => {
-    e.preventDefault();
+  handleLoadMore = () => {
     this.setState({
       page: this.state.page + 1,
     });
@@ -84,6 +76,10 @@ export class App extends Component {
     }
   };
 
+  onCloseModalByEsc = () => {
+    this.setState({ bigUrl: '' });
+  };
+
   render() {
     return (
       <>
@@ -97,7 +93,11 @@ export class App extends Component {
         )}
         {this.state.pictures && <Button onLoadMore={this.handleLoadMore} />}
         {this.state.bigUrl && (
-          <Modal bigUrl={this.state.bigUrl} onCloseModal={this.onCloseModal} />
+          <Modal
+            bigUrl={this.state.bigUrl}
+            onCloseModal={this.onCloseModal}
+            onCloseModalByEsc={this.onCloseModalByEsc}
+          />
         )}
       </>
     );

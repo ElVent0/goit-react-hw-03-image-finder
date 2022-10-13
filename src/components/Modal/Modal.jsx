@@ -3,6 +3,22 @@ import PropTypes from 'prop-types';
 import { ModalStyled, ModalStyledContent } from './Modal.styled';
 
 class Modal extends Component {
+  componentDidMount() {
+    window.addEventListener('keydown', e => {
+      if (e.code === 'Escape') {
+        this.props.onCloseModalByEsc();
+      }
+    });
+  }
+
+  async componentWillUnmount() {
+    window.removeEventListener('keydown', e => {
+      if (e.code === 'Escape') {
+        this.setState({ bigUrl: '' });
+      }
+    });
+  }
+
   render() {
     return (
       <ModalStyled onClick={this.props.onCloseModal}>
