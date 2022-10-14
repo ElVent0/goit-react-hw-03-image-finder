@@ -6,7 +6,7 @@ class Modal extends Component {
   componentDidMount() {
     window.addEventListener('keydown', e => {
       if (e.code === 'Escape') {
-        this.props.onCloseModalByEsc();
+        this.props.handleCloseModal();
       }
     });
   }
@@ -19,9 +19,15 @@ class Modal extends Component {
     });
   }
 
+  onCloseModal = e => {
+    if (e.currentTarget === e.target) {
+      this.props.handleCloseModal();
+    }
+  };
+
   render() {
     return (
-      <ModalStyled onClick={this.props.onCloseModal}>
+      <ModalStyled onClick={this.onCloseModal}>
         <ModalStyledContent>
           <img src={this.props.bigUrl} alt="" width="100%" />
         </ModalStyledContent>

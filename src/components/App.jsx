@@ -45,10 +45,18 @@ export class App extends Component {
           this.state.word,
           this.state.page
         );
-        this.setState({
-          pictures: parsedDataUpdate,
-          loading: false,
-        });
+
+        if (this.state.word !== prevState.word) {
+          this.setState({
+            pictures: parsedDataUpdate,
+            loading: false,
+          });
+        } else if (this.state.page !== prevState.page) {
+          this.setState({
+            pictures: [...prevState.pictures, ...parsedDataUpdate],
+            loading: false,
+          });
+        }
       } catch (e) {
         console.log(e);
       }
@@ -70,13 +78,7 @@ export class App extends Component {
     this.setState({ bigUrl: largeImageURL });
   };
 
-  onCloseModal = e => {
-    if (e.currentTarget === e.target) {
-      this.setState({ bigUrl: '' });
-    }
-  };
-
-  onCloseModalByEsc = () => {
+  handleCloseModal = () => {
     this.setState({ bigUrl: '' });
   };
 
@@ -95,8 +97,7 @@ export class App extends Component {
         {this.state.bigUrl && (
           <Modal
             bigUrl={this.state.bigUrl}
-            onCloseModal={this.onCloseModal}
-            onCloseModalByEsc={this.onCloseModalByEsc}
+            handleCloseModal={this.handleCloseModal}
           />
         )}
       </>
